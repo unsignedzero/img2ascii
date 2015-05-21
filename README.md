@@ -15,6 +15,7 @@ is a shell, as oppose to a browse like other targets for color output.
 
 ## Version/Changelog
 
+* Cleaned up colortrans.
 * Loaded reference gist before editing.
 * README and license created.
 
