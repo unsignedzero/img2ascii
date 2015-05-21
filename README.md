@@ -11,7 +11,10 @@ is a shell, as oppose to a browse like other targets for color output.
 
 ## General References
 
+* Color [gist](https://gist.github.com/MicahElliott/719710) to map 24bit RGB to 8bit.
+
 ## Version/Changelog
 
+* Loaded reference gist before editing.
 * README and license created.
 
