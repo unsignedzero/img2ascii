@@ -17,13 +17,13 @@ written it from scratch, though it's been several years now.
 Code updated and polished by David Tran (unsignedzero). See 2nd commit for
 original form
 
-Last Modified: 2015-05-21_13:12:34
+Last Modified: 2015-05-21_17:37:42
 """
 
 __author__ = 'Micah Elliott http://MicahElliott.com, David Tran (unsignedzero)'
 __copyright__ = 'Copyright (C) 2015 Micah Elliott.  All rights reserved.'
 __license__ = 'WTFPL http://sam.zoy.org/wtfpl/'
-__version__ = '1.0'
+__version__ = '1.1'
 
 from operator import itemgetter
 
@@ -156,13 +156,17 @@ def rgb_to_shell_color(rgb):
 
   compare_value = (0x00, 0x5f, 0x87, 0xaf, 0xd7, 0xff)
 
+
   # Split color channel adapt
-  try:
-    # Break String into 2 character pieces
-    color_channels = (int(rgb[i:i+2], 16) for i in range(0, len(rgb), 2))
-  except TypeError:
-    # Bit shift values
-    color_channels = (((rgb>>(8*n)) & 255) for n in range(2, -1, -1))
+  if not isinstance(rgb, tuple) and not isinstance(rgb, list) and not len(rgb) == 3:
+    try:
+      # Break String into 2 character pieces
+      color_channels = [int(rgb[i:i+2], 16) for i in range(0, len(rgb), 2)]
+    except TypeError:
+      # Bit shift values
+      color_channels = (((rgb>>(8*n)) & 255) for n in range(2, -1, -1))
+  else:
+    color_channels = rgb
 
   closest_color = 0
 
@@ -172,7 +176,7 @@ def rgb_to_shell_color(rgb):
         closest_color = (closest_color<<8) + closest(low, channel, high)
         break
 
-  return (rgb_shell[closest_color], closest_color)
+  return rgb_shell[closest_color]
 
 def shell_to_rgb_color(shell_color):
   return shell_rgb[shell_color]

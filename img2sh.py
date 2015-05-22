@@ -3,6 +3,10 @@
 """
 Given an image file, generates an ascii copy for console.
 
+Uses PIL (Python Imaging Library) to do the heavy work.
+
+Requires libjpeg-dev before installing Pil.
+
 """
 
 __author__ = "David Tran (unsignedzero)"
@@ -12,7 +16,7 @@ __email__ = "unsignedzero@gmail.com"
 __license__ = "MIT"
 __maintainer__ = "David Tran"
 __status__ = "Production"
-__version__ = "0.0"
+__version__ = "0.1"
 
 from argparse import ArgumentParser
 from PIL import Image
@@ -35,7 +39,7 @@ def pixel_to_color(rgb_value, _):
 
   """
 
-  return '%s▇' % rgb_to_shell_color(rgb_value)
+  return '\033[48;5;%dm▇' % rgb_to_shell_color(rgb_value)
 
 ### calls external library to map rgb tuple to ascii greyscale
 def pixel_to_greyscape(rgb_value, greyscale):
@@ -63,7 +67,7 @@ def pixel_to_greyscape(rgb_value, greyscale):
   return greyscale[int(sum(rgb_value) / 768.0 * len(greyscale))]
 
 ### Converts the image file into an ascii "image" string
-def transform_image_to_ascii(filename, max_length=80,
+def transform_image_to_ascii(filename, max_length=40,
     max_percentage=None, greyscale=""):
   """
 
@@ -94,7 +98,7 @@ def transform_image_to_ascii(filename, max_length=80,
     max_percentage = 1.0
 
   if max_length <= 0:
-    max_length = 80
+    max_length = 40
 
   if greyscale is None:
     color_map_func = pixel_to_color
@@ -113,7 +117,7 @@ def transform_image_to_ascii(filename, max_length=80,
     new_dimensions = (int(width * max_percentage), int(height * max_percentage))
     new_width, new_height = new_dimensions
 
-    new_image_obj = image_obj.resize(new_dimensions, image_obj.ANTIALIAS)
+    new_image_obj = image_obj.resize(new_dimensions, Image.ANTIALIAS)
     new_image_array = new_image_obj.load()
 
     output_buffer = []
@@ -149,11 +153,11 @@ def command_line_process():
                       action='store_true', dest='color',
                       help="Set color output")
   parser.add_argument('--max_length', '--len', '-l',
-                      action='store', dest='length', default=80,
+                      action='store', dest='length', default=40,
                       help=('Set max size of output image, '
-                            "could be percent, or size, default 80"))
+                            "could be percent, or size, default 40"))
   parser.add_argument('files',
-                      metavar='N', type=str, nargs='+',
+                      metavar='file', type=str, nargs='+',
                       help="The input image files for parsing")
 
 
@@ -175,9 +179,9 @@ def command_line_process():
   input_color_mode = None if color_mode else ''
 
   for each_file_name in args['files']:
-    transform_image_to_ascii(
+    print(transform_image_to_ascii(
         filename=each_file_name, max_length=max_length,
-        max_percentage=max_percentage, greyscale=input_color_mode)
+        max_percentage=max_percentage, greyscale=input_color_mode))
 
 if __name__ == '__main__':
   command_line_process()
