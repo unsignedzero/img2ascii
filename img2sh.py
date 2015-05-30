@@ -10,13 +10,13 @@ Requires libjpeg-dev before installing Pil.
 """
 
 __author__ = "David Tran (unsignedzero)"
-__copyright__ = "Copyright 2015"
+__copyright__ = "Copyright (C) 2015 David Tran.  All rights reserved."
 __credits__ = ["David Tran"]
 __email__ = "unsignedzero@gmail.com"
 __license__ = "MIT"
 __maintainer__ = "David Tran"
 __status__ = "Production"
-__version__ = "0.1"
+__version__ = "0.1.1"
 
 from argparse import ArgumentParser
 from PIL import Image
@@ -39,12 +39,11 @@ def pixel_to_color(rgb_value, _):
 
   """
 
-  return '\033[48;5;%dm▇' % rgb_to_shell_color(rgb_value)
+  return '\033[48;5;%dm ' % rgb_to_shell_color(rgb_value)
 
 ### calls external library to map rgb tuple to ascii greyscale
 def pixel_to_greyscape(rgb_value, greyscale):
   """
-
   Args:
     rgb_value:   (3-tuple int) The rgb value of a pixel
 
@@ -68,9 +67,8 @@ def pixel_to_greyscape(rgb_value, greyscale):
 
 ### Converts the image file into an ascii "image" string
 def transform_image_to_ascii(filename, max_length=40,
-    max_percentage=None, greyscale=""):
+                             max_percentage=None, greyscale=""):
   """
-
   Args:
     filename:   (str) The file this will process.
 
@@ -100,11 +98,13 @@ def transform_image_to_ascii(filename, max_length=40,
   if max_length <= 0:
     max_length = 40
 
+  # Select transformation function
   if greyscale is None:
     color_map_func = pixel_to_color
   elif not greyscale:
     color_map_func = pixel_to_greyscape
-    greyscale=r'''$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`'. '''
+    greyscale = (r'''$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvun'''
+                 r'''xrjft/\|()1{}[]?-_+~<>i!lI;:,"^`'. ''')
 
   with open(filename) as fin:
     image_obj = Image.open(fin)
@@ -129,7 +129,6 @@ def transform_image_to_ascii(filename, max_length=40,
 
     return ''.join(output_buffer)
 
-
 ### Processes command line calls
 def command_line_process():
   """
@@ -147,6 +146,7 @@ def command_line_process():
   Returns:
     None
   """
+
   parser = ArgumentParser(
       description="Given an image file, generates an ascii copy for console.")
   parser.add_argument('--color', '-c',

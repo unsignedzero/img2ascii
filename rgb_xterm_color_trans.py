@@ -15,20 +15,23 @@ I'm not sure where this script was inspired from. I think I must have
 written it from scratch, though it's been several years now.
 
 Code updated and polished by David Tran (unsignedzero). See 2nd commit for
-original form
+original form.
 
-Last Modified: 2015-05-21_17:37:42
+Last Modified: 2015-05-30_10:38:01
 """
 
 __author__ = 'Micah Elliott http://MicahElliott.com, David Tran (unsignedzero)'
 __copyright__ = 'Copyright (C) 2015 Micah Elliott.  All rights reserved.'
+__credits__ = ["Micah Elliott", "David Tran"]
 __license__ = 'WTFPL http://sam.zoy.org/wtfpl/'
-__version__ = '1.1'
+__maintainer__ = "David Tran"
+__status__ = "Production"
+__version__ = '1.1.1'
 
 from operator import itemgetter
 
-### Contains a mapping from shell colors to the closest rgb colors
-shell_rgb = dict([
+### Contains a mapping from xterm colors to the closest rgb colors
+xterm_rgb = dict([
     #  8-bit, RGB hex
 
     # Primary 3-bit (8 colors)
@@ -105,10 +108,10 @@ shell_rgb = dict([
 
 ])
 
-### Contains a mapping from rgb colors to a shell color.
-rgb_shell = {v: k for k, v in shell_rgb.iteritems()}
+### Contains a mapping from rgb colors to a xterm color.
+rgb_xterm = {v: k for k, v in xterm_rgb.iteritems()}
 
-### Prints all 256 shell color values and the associated RGB value.
+### Prints all 256 xterm color values and the associated RGB value.
 def print_all_values():
   """
 
@@ -129,22 +132,22 @@ def print_all_values():
 
   msg_buffer = []
 
-  for i, (shell_value, rgb_value) in enumerate(
-      sorted(shell_rgb.items(), key=itemgetter(0))):
-    msg_buffer.append(output_msg % {'short': shell_value, 'rgb': rgb_value})
+  for i, (xterm_value, rgb_value) in enumerate(
+      sorted(xterm_rgb.items(), key=itemgetter(0))):
+    msg_buffer.append(output_msg % {'short': xterm_value, 'rgb': rgb_value})
 
     if (i & 3) == 3:
-      print("".join(msg_buffer))
+      print(''.join(msg_buffer))
       msg_buffer = []
 
 ### Converts an rgb color to the closest 256 xterm color
-def rgb_to_shell_color(rgb):
+def rgb_to_xterm_color(rgb):
   """
   Args:
     rgb:  (int or string) An rgb value as an int or the representing string.
 
   Returns:
-    A tuple containing the closest shell color and it's rgb value.
+    A tuple containing the closest xterm color and it's rgb value.
 
   Raises:
     KeyError, ValueError
@@ -158,7 +161,7 @@ def rgb_to_shell_color(rgb):
 
 
   # Split color channel adapt
-  if not isinstance(rgb, tuple) and not isinstance(rgb, list) and not len(rgb) == 3:
+  if not isinstance(rgb, tuple) and not isinstance(rgb, list):
     try:
       # Break String into 2 character pieces
       color_channels = [int(rgb[i:i+2], 16) for i in range(0, len(rgb), 2)]
@@ -176,11 +179,24 @@ def rgb_to_shell_color(rgb):
         closest_color = (closest_color<<8) + closest(low, channel, high)
         break
 
-  return rgb_shell[closest_color]
+  return rgb_xterm[closest_color]
 
-def shell_to_rgb_color(shell_color):
-  return shell_rgb[shell_color]
+### Converts an xterm color into it's closest RGB equivalent
+def xterm_to_rgb_color(xterm_color):
+  """
+  Args:
+    xterm_color:   (int) A value betwween 0 - 255 representing the xterm color.
+
+  Returns:
+    The RGB color as a 24bit int.
+
+  Raises:
+    KeyError
+
+  """
+
+  return xterm_rgb[xterm_color]
 
 if __name__ == '__main__':
-
   print_all_values()
+

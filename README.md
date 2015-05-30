@@ -15,6 +15,7 @@ is a shell, as oppose to a browse like other targets for color output.
 
 ## Version/Changelog
 
+* Added more comments and s/shell/xterm/.
 * Tested and working.
 * Added main library using PIL.
 * Cleaned up colortrans.
